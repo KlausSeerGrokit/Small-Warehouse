@@ -1,0 +1,6 @@
+name: hello_robot_example
+simulation: false
+agents:
+  - name: testing
+    graphql_actor: http://host.docker.internal:3000
+    paraflow_port: 3030

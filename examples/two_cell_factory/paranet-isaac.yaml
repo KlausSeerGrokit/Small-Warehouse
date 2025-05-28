@@ -1,0 +1,10 @@
+name: CES-Isaac
+simulation: false
+agents:
+  - name: fleet_mgmt
+    paraflow: fleet.paraflow
+    path: ./paranet/isaac-sim/multicell
+models:
+  - ./paranet/user/guest.user.yml
+  - ./paranet/belt_operator/belt_operator.skill.yaml
+  - ./paranet/staging_operator/staging_operator.skill.yaml

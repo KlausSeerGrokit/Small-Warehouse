@@ -1,0 +1,15 @@
+name: hello_world
+id: hello_world
+version: 0.0.1
+channel: latest
+agents:
+  - name: Hello Paranet
+    id: hello_paranet
+    version: 0.0.1
+    paraflow: hello_paranet.paraflow
+    path: ./hello_paranet
+  - name: Hello robot
+    id: hello_robot
+    version: 0.0.1
+    graphql_actor: http://host.docker.internal:3000
+    paraflow_port: 3030

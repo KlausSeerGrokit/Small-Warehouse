@@ -1,0 +1,30 @@
+id: guest@1.0.0
+skills:
+  skills:
+  - subject: messaging
+    actions:
+    - action: new_thread
+      constraints:
+        message:
+          $type: string
+      input:
+        message: paranet:string
+      output: null
+      extract: null
+    - action: notify
+      constraints:
+        notification:
+          $type: string
+      input: null
+      output: null
+      extract: null
+    - action: notify_confirm
+      constraints:
+        notification:
+          $type: string
+      input: null
+      output: paranet:received
+      extract: null
+  skillsets:
+  - id: staging_operator@1.0.0
+  - id: belt_operator@1.0.0

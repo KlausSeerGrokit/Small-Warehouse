@@ -1,0 +1,60 @@
+%skill(subject=demo,action=reset)
+event resetDemo($conversation string) {
+  foreach !RunDemo(_state == "Active", $cid) {
+    cancel !RunDemo(cid -> $cid);
+    update tote_workflow(cid == $cid, outcome: "error");
+  }
+  foreach !RunDemo(_state == "Planned", $cid) {
+    cancel !RunDemo(cid -> $cid);
+    update tote_workflow(cid == $cid, outcome: "error");
+  }
+  return { message: "reset" };
+}
+
+%skill(subject=demo,action=start_demo)
+event acceptStartDemo($conversation string) {
+  if not exists !RunDemo(_state == "Active") {
+    insert tote_workflow(cid: $conversation);
+    !RunDemo(cid -> $conversation);
+  } else {
+    !Error(cid -> $conversation, message -> "Workflow in progress");
+  }
+}
+
+# IRL demo is simple linear workflow
+rule !RunDemo($cid) {
+  !PlaceToteBelt($cid);
+  !CheckToteGoodBad($cid);
+  !StageTote($cid);
+  !FinalizeTote($cid);
+}
+
+task !PlaceToteBelt($cid) is
+  pncp ur_arm_phy/fill_tote();
+
+task !CheckToteGoodBad($cid) is
+  pncp let { $condition } = belt/move_check_tote(message -> "Move tote and report condition") in {
+    update tote_workflow(cid == $cid, $condition);
+  }
+
+rule !StageTote($cid) {
+  with tote_workflow(cid == $cid, $condition) {
+    if MatchRe("(?i)good", $condition) {
+      !PlaceToteStaging($cid, target -> "good_table");
+    } else {
+      !PlaceToteStaging($cid, target -> "bad_table");
+    }
+  }
+}
+
+task !PlaceToteStaging($cid, $target) is
+  pncp digit_phy/stage_tote($target);
+
+task !FinalizeTote($cid) is
+  pncp let { $outcome } = staging/finalize_tote(message -> "Finalize tote") in {
+    update tote_workflow(cid == $cid, $outcome);
+  }
+
+task !Error($cid, $message) {
+  pncp error($message) to $cid;
+}

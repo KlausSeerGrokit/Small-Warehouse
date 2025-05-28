@@ -1,0 +1,8 @@
+id: belt_operator@1.0.0
+skills:
+  - subject: belt
+    actions:
+      - action: move_check_tote
+        input:
+          message: paranet:string
+        output: {}

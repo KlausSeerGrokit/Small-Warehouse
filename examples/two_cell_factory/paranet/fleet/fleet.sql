@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS tote_workflow (
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `cid` VARCHAR(255) NOT NULL,
+  `condition` VARCHAR(255),
+  `outcome` VARCHAR(255)
+);

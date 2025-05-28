@@ -1,0 +1,10 @@
+id: warehouse
+version: 0.0.1
+actors:
+  - name: inspect
+    version: 0.0.1
+    paraflow: inspect.paraflow
+    path: ./actors/inspect
+models:
+  - ./skills/spot.skill.yaml
+  - ./skills/franka.skill.yaml

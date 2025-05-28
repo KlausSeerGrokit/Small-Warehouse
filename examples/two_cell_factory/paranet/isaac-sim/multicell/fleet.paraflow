@@ -1,0 +1,63 @@
+%skill(subject=demo,action=reset_all)
+event resetDemo($conversation string) {
+  foreach !RunDemo(_state == "Active", $cid) {
+    cancel !RunDemo(cid -> $cid);
+  }
+  foreach !RunDemo(_state == "Planned", $cid) {
+    cancel !RunDemo(cid -> $cid);
+  }
+  return { message: "reset" };
+}
+
+%skill(subject=demo,action=start_cell)
+event acceptStartDemo($cell int, $conversation string) {
+  if not exists !RunDemo(_state == "Active", cell == $cell) {
+    !RunDemo(cid -> $conversation, $cell);
+  } else {
+    !Error(cid -> $conversation, message -> "Workflow in progress");
+  }
+}
+
+# IRL demo is simple linear workflow
+rule !RunDemo($cid, $cell) {
+  !PutNewBlock($cid, $cell);
+  !PlaceToteBelt($cid, $cell);
+  !CheckToteGoodBad($cid, $cell);
+  !StageTote($cid, $cell);
+  !AutoStart($cid, $cell);
+}
+
+rule !AutoStart($cid, $cell), !StageTote(cid == $cid, cell == $cell) {
+  let $t = Now();
+  !RunDemo(cid -> Uuid(), $cell) after $t + 10 sec;
+}
+
+task !PutNewBlock($cid, $cell) is
+  pncp h1/put_widget($cell);
+
+task !PlaceToteBelt($cid, $cell) is
+  pncp ur_arm/fill_tote($cell);
+
+task !CheckToteGoodBad($cid, $cell) is
+  pncp let { $condition } = belt/move_check_tote(message -> "Move tote and report condition", $cell) in {
+    return { pkg_condition: $condition };
+  }
+
+rule !StageTote($cid, $cell), !CheckToteGoodBad(cid == $cid, cell == $cell, $pkg_condition) {
+  !PickupTote($cid, $cell);
+  if MatchRe("(?i)good", $pkg_condition) {
+    !PlaceToteStaging($cid, $cell, target -> "good_table");
+  } else {
+    !PlaceToteStaging($cid, $cell, target -> "bad_table");
+  }
+}
+
+task !PickupTote($cid, $cell) is
+  pncp phy_digit/pickup_tote($cell);
+
+task !PlaceToteStaging($cid, $cell, $target) is
+  pncp phy_digit/place_tote($cell, $target);
+
+task !Error($cid, $message) {
+  pncp response($message) to $cid;
+}

@@ -1,0 +1,49 @@
+%skill(subject=inspect, action=check)
+event check($x int, $y int, $conversation string) {
+  log info("Sending spot to (" + $x + ", " + $y + ")");
+  !Inspect(cid -> $conversation, $x, $y);
+ 
+}
+
+task !Inspect($cid, $x, $y) {
+  pncp request spot/goto($x, $y) to "spot_1@1.0.0"; #from paracord : ID:spot_1
+  #pncp request franka/getLocation($Location)
+}
+
+
+
+#my attempt at working starting this based on spot_patrol example
+
+%skill(subject=inspect, action=requestInspection)
+event requestInspection($x int, $y int, $conversation string){ #replace x and y with the disabled franka arm location
+  log info("Sending spot to (" + $x + ", " + $y + ")");
+  let $uid = Uuid(); #question about what this does from spot patrol example? i believe it just generates a uuid but not entirely sure how to use it
+  !DoInspection($uid, $Location, cid -> $conversation);
+}
+
+rule !DoInspection($uid, $x, $y, $cid) {
+  !findActors($uid, $x, $y);  #finds the actors with the skills to do an inspection (in our case just the spots so might be able to omit this for now)
+  !checkAvailability($uid, $x, $y, $cid); #checks the status of the spots to see if they can perform the inspection (aka not busy already doing one), and their distances to the inspection location
+  !allocateInspection($uid, $x, $y, $cid);  #requests the inspection from the closest spot
+}
+
+task !findActors($uid, $x, $y)  { #insert something here
+  #do something here to collect list of available actors (skill matching)
+}
+
+rule !checkAvailability($uid, $x, $y, $cid) {
+ #get the distance and status from the spot arms compared to the franka arms
+ #maybe save this information into a table? (spot patrol did sql in the example)
+}
+
+rule !allocateInspection($uid, $x, $y, $cid){
+  #use algorithm (maybe sql) to return the actor with the smallest distance and is available
+  #request inspection
+  #maybe send an error if no actors are returned from the algo
+}
+
+task requestInspection($uid, $x, $y, $cid) is #task details
+ {
+  
+  #send response message to conversation to know that it was successfully initiated
+}

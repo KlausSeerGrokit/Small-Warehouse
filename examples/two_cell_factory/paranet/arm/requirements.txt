@@ -1,0 +1,5 @@
+aenum
+bitarray
+typing_extensions
+pluggy
+xsdata

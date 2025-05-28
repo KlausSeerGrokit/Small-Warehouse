@@ -1,0 +1,8 @@
+id: franka@1.0.0
+skills:
+- subject: franka
+  actions:
+  - action: status
+  - action: wave
+  - action: disable
+  - action: enable

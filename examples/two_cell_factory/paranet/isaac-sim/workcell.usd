@@ -1,0 +1,524 @@
+#usda 1.0
+(
+    customLayerData = {
+        dictionary cameraSettings = {
+            dictionary Front = {
+                double3 position = (5, 0, 0)
+                double radius = 5
+            }
+            dictionary Perspective = {
+                double3 position = (4.884295706688715, -2.044463416566863, 2.5818870585554476)
+                double3 target = (1.3720817771603997, 10.033216373975508, -3.7480040305892475)
+            }
+            dictionary Right = {
+                double3 position = (0, -5, 0)
+                double radius = 5
+            }
+            dictionary Top = {
+                double3 position = (3.104415503687829, 2.7836469438251834, 5)
+                double radius = 15.126789855957032
+            }
+            string boundCamera = "/OmniverseKit_Persp"
+        }
+        dictionary metricsAssembler = {
+            dictionary "/World/opaque__rubber__safety_tread_yellow" = {
+            }
+            int version = 1
+        }
+        dictionary omni_layer = {
+            string authoring_layer = "./workcell.usd"
+            dictionary locked = {
+            }
+            dictionary muteness = {
+            }
+        }
+        int refinementOverrideImplVersion = 0
+        dictionary renderSettings = {
+            float3 "rtx:debugView:pixelDebug:textColor" = (0, 1e18, 0)
+            int "rtx:externalFrameCounter" = 78900
+            float3 "rtx:fog:fogColor" = (0.75, 0.75, 0.75)
+            float3 "rtx:index:backgroundColor" = (0, 0, 0)
+            float3 "rtx:index:regionOfInterestMax" = (0, 0, 0)
+            float3 "rtx:index:regionOfInterestMin" = (0, 0, 0)
+            float3 "rtx:post:backgroundZeroAlpha:backgroundDefaultColor" = (0, 0, 0)
+            float3 "rtx:post:colorcorr:contrast" = (1, 1, 1)
+            float3 "rtx:post:colorcorr:gain" = (1, 1, 1)
+            float3 "rtx:post:colorcorr:gamma" = (1, 1, 1)
+            float3 "rtx:post:colorcorr:offset" = (0, 0, 0)
+            float3 "rtx:post:colorcorr:saturation" = (1, 1, 1)
+            float3 "rtx:post:colorgrad:blackpoint" = (0, 0, 0)
+            float3 "rtx:post:colorgrad:contrast" = (1, 1, 1)
+            float3 "rtx:post:colorgrad:gain" = (1, 1, 1)
+            float3 "rtx:post:colorgrad:gamma" = (1, 1, 1)
+            float3 "rtx:post:colorgrad:lift" = (0, 0, 0)
+            float3 "rtx:post:colorgrad:multiply" = (1, 1, 1)
+            float3 "rtx:post:colorgrad:offset" = (0, 0, 0)
+            float3 "rtx:post:colorgrad:whitepoint" = (1, 1, 1)
+            float3 "rtx:post:lensDistortion:lensFocalLengthArray" = (10, 30, 50)
+            float3 "rtx:post:lensFlares:anisoFlareFalloffX" = (450, 475, 500)
+            float3 "rtx:post:lensFlares:anisoFlareFalloffY" = (10, 10, 10)
+            float3 "rtx:post:lensFlares:cutoffPoint" = (2, 2, 2)
+            float3 "rtx:post:lensFlares:haloFlareFalloff" = (10, 10, 10)
+            float3 "rtx:post:lensFlares:haloFlareRadius" = (75, 75, 75)
+            float3 "rtx:post:lensFlares:isotropicFlareFalloff" = (50, 50, 50)
+            float3 "rtx:post:lensFlares:spectralBlurWavelengthRange" = (380, 550, 770)
+            float3 "rtx:post:tonemap:whitepoint" = (1, 1, 1)
+            float3 "rtx:raytracing:indexdirect:svoBrickSize" = (32, 32, 32)
+            float3 "rtx:raytracing:inscattering:singleScatteringAlbedo" = (0.9, 0.9, 0.9)
+            float3 "rtx:raytracing:inscattering:transmittanceColor" = (0.5, 0.5, 0.5)
+            float3 "rtx:sceneDb:ambientLightColor" = (0.1, 0.1, 0.1)
+            float2 "rtx:viewTile:resolution" = (0, 0)
+        }
+    }
+    defaultPrim = "Workcell"
+    endTimeCode = 100
+    metersPerUnit = 1
+    startTimeCode = 0
+    timeCodesPerSecond = 24
+    upAxis = "Z"
+)
+
+over "Render" (
+    hide_in_stage_window = true
+)
+{
+}
+
+def PhysicsScene "physicsScene"
+{
+}
+
+def Xform "Workcell"
+{
+    def Scope "Robots"
+    {
+        def Xform "ConveyorTrack" (
+            prepend references = @http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.2/Isaac/Props/Conveyors/ConveyorBelt_A08.usd@
+        )
+        {
+            quatd xformOp:orient = (1, 0, 0, 0)
+            double3 xformOp:scale = (1, 1, 1)
+            double3 xformOp:translate = (3.023641428228991, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def OmniGraph "ConveyorBeltGraph"
+            {
+                token evaluationMode = "Automatic"
+                token evaluator:type = "execution"
+                token fabricCacheBacking = "Shared"
+                int2 fileFormatVersion = (1, 9)
+                custom float graph:variable:Velocity = 1 (
+                    customData = {
+                        token scope = "private"
+                    }
+                    displayName = "Velocity"
+                )
+                token pipelineStage = "pipelineStageSimulation"
+
+                def OmniGraphNode "OnTick"
+                {
+                    token node:type = "omni.graph.action.OnPlaybackTick"
+                    int node:typeVersion = 2
+                    custom double outputs:deltaSeconds
+                    custom double outputs:frame
+                    custom uint outputs:tick (
+                        customData = {
+                            bool isExecution = 1
+                        }
+                    )
+                    custom double outputs:time
+                }
+
+                def OmniGraphNode "ConveyorNode"
+                {
+                    custom float2 inputs:animateDirection = (0, 0.1)
+                    custom float inputs:animateScale = 0.01
+                    custom bool inputs:animateTexture
+                    custom rel inputs:conveyorPrim = </Workcell/Robots/ConveyorTrack/Rollers> (
+                        customData = {
+                            dictionary omni = {
+                                dictionary graph = {
+                                    string relType = "target"
+                                }
+                            }
+                        }
+                    )
+                    custom bool inputs:curved = 0
+                    custom float inputs:delta
+                    prepend float inputs:delta.connect = </Workcell/Robots/ConveyorTrack/ConveyorBeltGraph/OnTick.outputs:deltaSeconds>
+                    custom float3 inputs:direction = (1, 0, 0)
+                    custom bool inputs:enabled
+                    custom uint inputs:onStep (
+                        customData = {
+                            bool isExecution = 1
+                        }
+                    )
+                    prepend uint inputs:onStep.connect = </Workcell/Robots/ConveyorTrack/ConveyorBeltGraph/OnTick.outputs:tick>
+                    custom float inputs:velocity
+                    prepend float inputs:velocity.connect = </Workcell/Robots/ConveyorTrack/ConveyorBeltGraph/read_speed.outputs:value>
+                    token node:type = "omni.isaac.conveyor.IsaacConveyor"
+                    int node:typeVersion = 1
+                }
+
+                def OmniGraphNode "read_speed"
+                {
+                    custom rel inputs:graph = </Workcell/Robots/ConveyorTrack/ConveyorBeltGraph> (
+                        customData = {
+                            dictionary omni = {
+                                dictionary graph = {
+                                    string relType = "target"
+                                }
+                            }
+                        }
+                    )
+                    custom token inputs:targetPath
+                    custom token inputs:variableName = "Velocity"
+                    token node:type = "omni.graph.core.ReadVariable"
+                    int node:typeVersion = 2
+                    custom token outputs:value
+                }
+            }
+
+            over "Rollers" (
+                prepend apiSchemas = ["PhysxSurfaceVelocityAPI"]
+            )
+            {
+                vector3f physxSurfaceVelocity:surfaceVelocity = (1, 0, 0)
+                bool physxSurfaceVelocity:surfaceVelocityEnabled = 1
+            }
+
+            over "Looks"
+            {
+                over "Aluminium_Brushed_A"
+                {
+                    float2 inputs:texture_translate = (0, 0)
+
+                    over "Shader"
+                    {
+                        float2 inputs:texture_translate = (0, 0)
+                    }
+                }
+            }
+        }
+
+        def Xform "ConveyorTrack_01" (
+            prepend references = @http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.2/Isaac/Props/Conveyors/ConveyorBelt_A05.usd@
+        )
+        {
+            quatd xformOp:orient = (1, 0, 0, 0)
+            double3 xformOp:scale = (1, 1, 1)
+            double3 xformOp:translate = (3.025751992856276, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def OmniGraph "ConveyorBeltGraph"
+            {
+                token evaluationMode = "Automatic"
+                token evaluator:type = "execution"
+                token fabricCacheBacking = "Shared"
+                int2 fileFormatVersion = (1, 9)
+                custom float graph:variable:Velocity = 1 (
+                    customData = {
+                        token scope = "private"
+                    }
+                    displayName = "Velocity"
+                )
+                token pipelineStage = "pipelineStageSimulation"
+
+                def OmniGraphNode "OnTick"
+                {
+                    token node:type = "omni.graph.action.OnPlaybackTick"
+                    int node:typeVersion = 2
+                    custom double outputs:deltaSeconds
+                    custom double outputs:frame
+                    custom uint outputs:tick (
+                        customData = {
+                            bool isExecution = 1
+                        }
+                    )
+                    custom double outputs:time
+                }
+
+                def OmniGraphNode "ConveyorNode"
+                {
+                    custom float2 inputs:animateDirection = (0, 1)
+                    custom float inputs:animateScale = 0.01
+                    custom bool inputs:animateTexture
+                    custom rel inputs:conveyorPrim = </Workcell/Robots/ConveyorTrack_01/Rollers> (
+                        customData = {
+                            dictionary omni = {
+                                dictionary graph = {
+                                    string relType = "target"
+                                }
+                            }
+                        }
+                    )
+                    custom bool inputs:curved = 0
+                    custom float inputs:delta
+                    prepend float inputs:delta.connect = </Workcell/Robots/ConveyorTrack_01/ConveyorBeltGraph/OnTick.outputs:deltaSeconds>
+                    custom float3 inputs:direction = (1, 0, 0)
+                    custom bool inputs:enabled
+                    custom uint inputs:onStep (
+                        customData = {
+                            bool isExecution = 1
+                        }
+                    )
+                    prepend uint inputs:onStep.connect = </Workcell/Robots/ConveyorTrack_01/ConveyorBeltGraph/OnTick.outputs:tick>
+                    custom float inputs:velocity
+                    prepend float inputs:velocity.connect = </Workcell/Robots/ConveyorTrack_01/ConveyorBeltGraph/read_speed.outputs:value>
+                    token node:type = "omni.isaac.conveyor.IsaacConveyor"
+                    int node:typeVersion = 1
+                }
+
+                def OmniGraphNode "read_speed"
+                {
+                    custom rel inputs:graph = </Workcell/Robots/ConveyorTrack_01/ConveyorBeltGraph> (
+                        customData = {
+                            dictionary omni = {
+                                dictionary graph = {
+                                    string relType = "target"
+                                }
+                            }
+                        }
+                    )
+                    custom token inputs:targetPath
+                    custom token inputs:variableName = "Velocity"
+                    token node:type = "omni.graph.core.ReadVariable"
+                    int node:typeVersion = 2
+                    custom token outputs:value
+                }
+            }
+
+            over "Rollers" (
+                prepend apiSchemas = ["PhysxSurfaceVelocityAPI"]
+            )
+            {
+                vector3f physxSurfaceVelocity:surfaceVelocity = (1, 0, 0)
+                bool physxSurfaceVelocity:surfaceVelocityEnabled = 1
+
+                over "SM_ConveyorBelt_A05_Roller06_02"
+                {
+                    double3 xformOp:rotateXYZ = (0, 0, -90)
+                    double3 xformOp:scale = (0.01, 0.01, 0.01)
+                    double3 xformOp:translate = (-0.6890426220703123, -0.015878988662182833, -2.280273447841097e-8)
+                    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+                }
+            }
+
+            over "Looks"
+            {
+                over "Aluminium_Brushed_A"
+                {
+                    float2 inputs:texture_translate = (0, 0)
+
+                    over "Shader"
+                    {
+                        float2 inputs:texture_translate = (0, 0)
+                    }
+                }
+            }
+        }
+    }
+
+    def Scope "Props"
+    {
+        def "_36_wood_block" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsRigidBodyAPI", "PhysxRigidBodyAPI"]
+            prepend payload = @http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.2/Isaac/Props/YCB/Axis_Aligned/036_wood_block.usd@
+        )
+        {
+            rel material:binding = None (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            bool physics:kinematicEnabled = 0
+            bool physics:rigidBodyEnabled = 0
+            token visibility = "inherited"
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (5.334, 5.334, 5.334)
+            double3 xformOp:translate = (-0.6, 3.38, 0.28)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            over "Looks"
+            {
+                over "OmniPBR"
+                {
+                    over "Shader"
+                    {
+                        float inputs:albedo_brightness = 0.85
+                        color3f inputs:diffuse_color_constant = (0.2, 0.2, 0.2)
+                        color3f inputs:diffuse_tint = (0.6259259, 0.07650207, 0.07650207)
+                        bool inputs:enable_emission = 0
+                        float inputs:opacity_constant = 1
+                        float inputs:reflection_roughness_constant = 0.19999999
+                        float inputs:reflection_roughness_texture_influence = 0
+                        float inputs:specular_level = 0.1
+                    }
+                }
+            }
+
+            over "_36_wood_block" (
+                prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "PhysxConvexHullCollisionAPI", "PhysicsMeshCollisionAPI"]
+            )
+            {
+                uniform token physics:approximation = "convexHull"
+                bool physics:collisionEnabled = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (0.01, 0.01, 0.01)
+                double3 xformOp:translate = (0.1615773214382344, 1.5210055437364645e-14, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+            }
+        }
+
+        def "_36_wood_block_01" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsRigidBodyAPI", "PhysxRigidBodyAPI"]
+            prepend payload = @http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.2/Isaac/Props/YCB/Axis_Aligned/036_wood_block.usd@
+        )
+        {
+            rel material:binding = None (
+                bindMaterialAs = "weakerThanDescendants"
+            )
+            bool physics:kinematicEnabled = 0
+            bool physics:rigidBodyEnabled = 0
+            token visibility = "inherited"
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (5.334, 5.334, 5.334)
+            double3 xformOp:translate = (-0.6, 2.3, 0.28)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            over "Looks"
+            {
+                over "OmniPBR"
+                {
+                    over "Shader"
+                    {
+                        float inputs:albedo_brightness = 0.85
+                        color3f inputs:diffuse_tint = (0.027764058, 0.32592595, 0.07414478)
+                        color3f inputs:emissive_color = (0.100000024, 1, 0.13999993)
+                        bool inputs:enable_emission = 0
+                        float inputs:opacity_constant = 1
+                        float inputs:reflection_roughness_constant = 0.56
+                        float inputs:specular_level = 0.1
+                    }
+                }
+            }
+
+            over "_36_wood_block" (
+                prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "PhysxConvexHullCollisionAPI", "PhysicsMeshCollisionAPI"]
+            )
+            {
+                uniform token physics:approximation = "convexHull"
+                bool physics:collisionEnabled = 1
+                quatf xformOp:orient = (1, 0, 0, 0)
+                float3 xformOp:scale = (0.01, 0.01, 0.01)
+                double3 xformOp:translate = (0.1615773214382344, 0, 0)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+            }
+        }
+
+        def "table01" (
+            prepend payload = @http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.2/Isaac/Environments/Outdoor/Rivermark/dsready_content/nv_content/common_assets/props_general/table01/table01.usd@
+        )
+        {
+            float3 xformOp:rotateXYZ = (0, 0, 0)
+            float3 xformOp:scale = (1, 1, 1)
+            double3 xformOp:translate = (0, 0, -9.650484855683317e-9)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+            over "table01_inst" (
+                delete apiSchemas = ["PhysxArticulationAPI", "PhysicsArticulationRootAPI", "PhysicsCollisionAPI", "PhysxCollisionAPI", "PhysxTriangleMeshCollisionAPI", "PhysicsMeshCollisionAPI"]
+                prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "PhysxTriangleMeshCollisionAPI", "PhysicsMeshCollisionAPI"]
+            )
+            {
+                uniform token physics:approximation = "none"
+                bool physics:collisionEnabled = 1
+                float3 xformOp:scale = (0.8, 1, 1.2)
+            }
+        }
+
+        def "table01_01" (
+            prepend payload = @http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.2/Isaac/Environments/Outdoor/Rivermark/dsready_content/nv_content/common_assets/props_general/table01/table01.usd@
+        )
+        {
+            float3 xformOp:rotateXYZ = (0, 0, 0)
+            float3 xformOp:scale = (1, 1, 1)
+            double3 xformOp:translate = (0, 0.81, -9.650484855683317e-9)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+            over "table01_inst" (
+                delete apiSchemas = ["PhysxArticulationAPI", "PhysicsArticulationRootAPI", "PhysicsCollisionAPI", "PhysxCollisionAPI", "PhysxTriangleMeshCollisionAPI", "PhysicsMeshCollisionAPI"]
+                prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "PhysxTriangleMeshCollisionAPI", "PhysicsMeshCollisionAPI"]
+            )
+            {
+                uniform token physics:approximation = "none"
+                bool physics:collisionEnabled = 1
+                float3 xformOp:scale = (0.8, 1, 1.2)
+            }
+        }
+
+        def "Tote" (
+            prepend payload = @http://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.2/Isaac/Props/KLT_Bin/small_KLT.usd@
+        )
+        {
+            float3 xformOp:rotateZYX = (0, 0, 0)
+            float3 xformOp:scale = (1.5, 1, 1)
+            double3 xformOp:translate = (0.5688333983502648, 0.04780755454544078, 1)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateZYX", "xformOp:scale"]
+        }
+
+        def Xform "Light_Panel"
+        {
+            quatd xformOp:orient = (1, 0, 0, 0)
+            double3 xformOp:scale = (1, 1, 1)
+            double3 xformOp:translate = (4, -0.54, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+            def "Light" (
+                prepend payload = @./Light.usd@
+            )
+            {
+                double3 xformOp:rotateXYZ = (90, 0, 90)
+                double3 xformOp:scale = (0.3, 0.3, 0.3)
+                double3 xformOp:translate = (0, 0, 1.9)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+
+                over "Looks"
+                {
+                    over "RedEmissive"
+                    {
+                        over "Shader"
+                        {
+                            float inputs:emission_intensity = 0
+                        }
+                    }
+
+                    over "GreenEmissive"
+                    {
+                        over "Shader"
+                        {
+                            float inputs:emission_intensity = 0
+                        }
+                    }
+                }
+            }
+
+            def Cylinder "Pole" (
+                prepend apiSchemas = ["MaterialBindingAPI"]
+            )
+            {
+                uniform token axis = "Z"
+                float3[] extent = [(-0.5, -0.5, -0.5), (0.5, 0.5, 0.5)]
+                double height = 1
+                rel material:binding = </Workcell/Props/Light_Panel/Light/Looks/LightStatusCube> (
+                    bindMaterialAs = "weakerThanDescendants"
+                )
+                double radius = 0.5
+                custom bool refinementEnableOverride = 1
+                custom int refinementLevel = 2
+                quatd xformOp:orient = (1, 0, 0, 0)
+                double3 xformOp:scale = (0.05, 0.05, 2.2)
+                double3 xformOp:translate = (0.3, -0.03, 0.8)
+                uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+            }
+        }
+    }
+}
+

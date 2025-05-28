@@ -1,0 +1,11 @@
+id: spot@1.0.0
+skills:
+- subject: spot
+  actions:
+  - action: goto
+    input:
+      x: paranet:int
+      y: paranet:int
+  - action: get_state
+  - action: get_position
+  - action: get_target

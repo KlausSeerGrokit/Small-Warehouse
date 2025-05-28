@@ -1,0 +1,9 @@
+%skill(subject=hello_world,action=greet)
+event newGreeting($conversation string, $requester string) {
+  !Greet(cid -> $conversation, actor -> $requester);
+}
+
+task !Greet($cid, $actor) {
+  let $message = "Hello " + $actor + "!";
+  pncp response($message) to $cid;
+}

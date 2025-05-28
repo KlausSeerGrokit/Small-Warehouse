@@ -1,0 +1,6 @@
+id: hello_world
+name: hello_world
+insecure: true
+simulation: true
+channel: latest
+paranet_registry: ghcr.io/otonoma

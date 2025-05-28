@@ -1,0 +1,9 @@
+<launch>
+  <include file="$(find ur5_moveit_config)/launch/demo.launch" />
+  <node pkg="isaac_ur5" name="ur5_moveit_connect" type="ur5_moveit_connect.py" />
+
+
+  <node name="joint_state_desired_publisher" pkg="topic_tools" type="relay" args="/joint_states /joint_states_desired" />
+  <node name="joint_command_publisher" pkg="topic_tools" type="relay" args="/move_group/fake_controller_joint_states /joint_command_desired" />
+
+</launch>

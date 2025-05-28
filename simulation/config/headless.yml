@@ -1,0 +1,2 @@
+headless: true      # true or false
+low_res: true        # half-size windows when true
