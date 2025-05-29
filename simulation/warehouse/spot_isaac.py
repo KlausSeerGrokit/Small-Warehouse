@@ -14,7 +14,7 @@ from isaacsim.robot.policy.examples.controllers import PolicyController
 from isaacsim.storage.native import get_assets_root_path
 from pxr import UsdGeom
 
-# from isaacsim.range_sensor import _range_sensor
+from isaacsim.sensors.physx import _range_sensor
 
 from .math_util import euler_from_quaternion
 from .vfh import VFH
@@ -217,7 +217,7 @@ class Spot:
         )
 
         print("Spot Position:", self.controller.robot.get_world_pose())
-        # self.controller.robot.set_joints_default_state(self.controller.default_pos)
+        self.controller.robot.set_joints_default_state(self.controller.default_pos)
 
         result, prim = omni.kit.commands.execute(
             "RangeSensorCreateLidar",
@@ -229,7 +229,7 @@ class Spot:
         UsdGeom.XformCommonAPI(prim).SetTranslate((0.5, 0.0, -0.12))
         self.lidar_path = self.body_path + "/body/Lidar"
         self.lidar = SingleRigidPrim(self.lidar_path)
-        # self.lidarInterface = _range_sensor.acquire_lidar_sensor_interface()
+        self.lidarInterface = _range_sensor.acquire_lidar_sensor_interface()
 
     def setup_post_load(self):
         self.controller.initialize()
@@ -238,9 +238,9 @@ class Spot:
     def on_physics_step(self, step_size, keyboard_cmd):
         if self.moving:
             if (self.iter % 5) == 0:
-                # cloud = self.get_world_cloud()
-                # if cloud is not None:
-                #    self.nav.update_cloud(cloud)
+                cloud = self.get_world_cloud()
+                if cloud is not None:
+                    self.nav.update_cloud(cloud)
                 if (self.iter % 10) == 0:
                     self.cmd = self.nav.get_command(trace=self.trace)
                     self.trace = LidarDebugTrace()
